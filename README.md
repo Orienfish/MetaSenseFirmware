@@ -47,7 +47,7 @@ Use the CLI tool in terminal is the most convenient option. Following the [insta
 
 **Important Note**: To compile and flash program to your Photon, you only need to setup your Particle account and make sure you have network connection. Setting up Photon and register it on network is not required.
 
-1. To compile a project in the current directory
+1. To compile a project in the **root** directory (not `src` directory)
 
    ```shell
    particle compile photon my_project_folder --saveTo firmware.bin
