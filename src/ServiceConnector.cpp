@@ -179,14 +179,14 @@ void ServiceConnector::processReadings() {
 
 	
 	// publish msg using MQTT
-	M_MQTT_TRACE("Publishing MSG to MQTT: %s\r\n", msg);
-	if (!mqttClient.isConnected()) {
-		M_MQTT_TRACE("Not connected to MQTT... reconnecting\r\n");
+	//M_MQTT_TRACE("Publishing MSG to MQTT: %s\r\n", msg);
+	//if (!mqttClient.isConnected()) {
+	//	M_MQTT_TRACE("Not connected to MQTT... reconnecting\r\n");
 		//mqttClient.connect(MQTT_Client_ID, MQTT_Server_Username, MQTT_Server_Password);
-		mqttClient.connect(MQTT_Client_ID);
-	}
-	if (mqttClient.isConnected()) {
-		M_MQTT_TRACE("Client is connected... publish to %s\r\n", MQTT_Topic);
-		mqttClient.publish(MQTT_Topic, msg);
-	}
+	//	mqttClient.connect(MQTT_Client_ID);
+	//}
+	//if (mqttClient.isConnected()) {
+	//	M_MQTT_TRACE("Client is connected... publish to %s\r\n", MQTT_Topic);
+	//	mqttClient.publish(MQTT_Topic, msg);
+	//}
 }

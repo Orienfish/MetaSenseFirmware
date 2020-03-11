@@ -41,8 +41,6 @@
 #include "StringStream.h"
 #include "PhotonConfig.h"
 #include "MQTT.h"
-#include "NeuralNetwork.h"
-#include "LinearRegression.h"
 #include "distributions.h"
 #include <math.h>
 
@@ -65,16 +63,12 @@ typedef struct {
 class ServiceConnector
 {
   public:
-    ServiceConnector(Sensor& sensor, VOC& voc, CO2& co2, MQTT& mqtt, 
-        NeuralNetwork& nn, LinearRegression& lr);
-	RunLocalProcess_t LocalProcess; 
+    ServiceConnector(Sensor& sensor, VOC& voc, CO2& co2, MQTT& mqtt);
     void begin();
     void processCommands();
     bool updateReadings();
     void processReadings();
     void applyWiFiStatus();
-
-    LinearRegression& _lr;
 
   private:
 	Readings_History_t ReadingsHistory[READINGS_HISTORY_SIZE];
@@ -95,7 +89,6 @@ class ServiceConnector
     VOC& voc;
     CO2& co2;
 	MQTT& mqttClient;
-	NeuralNetwork& _nn;
 };
 
 #endif

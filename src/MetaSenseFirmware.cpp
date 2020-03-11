@@ -65,7 +65,7 @@ PRODUCT_VERSION(9);
 #include "Sensor.h"
 #include "ServiceConnector.h"
 #include "logger.h"
-#include "shape.h"
+#include "PowerManager.h"
 
 //Variables retined when in DEEP SLEEP
 //retained unsigned long samplingInterval = 5000;
@@ -85,6 +85,10 @@ retained adsGain_t currentGain = GAIN_TWOTHIRDS;
 
 retained int BLE_KEY_PIN = D4;
 retained int UNCONNECTED_CS_PIN = D6;
+
+retained PowerEEPROMState_t PowerState;
+
+PowerManager PM;
 
 // ----------------
 bool temporarlyDisableSleep = false;
@@ -194,7 +198,7 @@ void setup()
 
 void loop()
 {
-	digitalWrite(led1, !digitalRead(led1));
+	digitalWrite(DebugLED, !digitalRead(DebugLED));
 
 	mqttClient.loop();
 	if (connector.updateReadings()){
