@@ -162,6 +162,33 @@ void setup()
 	if (SensorConfig.co2Installed)
 		co2.begin();
 
+	PM.begin(&PowerState);
+
+	if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
+		//TODO for debug remove in production
+		PM.printPowerReport();
+		//TODO end of debug stuff
+		INO_TRACE("---------Low battery in begin. Go down for sleep.---------");
+		//Sleep for 60 secs
+		System.sleep(SLEEP_MODE_DEEP, 60000);
+	}
+
+	// If the reset was due to power issues
+	if (System.resetReason() == RESET_REASON_POWER_MANAGEMENT ||
+					 System.resetReason() == RESET_REASON_POWER_DOWN ||
+					 System.resetReason() == RESET_REASON_POWER_BROWNOUT) {
+		//TODO: Maybe we need to do something if battery died to reset power module??
+		PM.printPowerReport();
+		//TODO end of debug stuff
+		if (System.resetReason() == RESET_REASON_POWER_MANAGEMENT)
+			INO_TRACE("Recovered from reset with reason RESET_REASON_POWER_MANAGEMENT: %d\n", System.resetReason());
+		if (System.resetReason() == RESET_REASON_POWER_DOWN)
+			INO_TRACE("Recovered from reset with reason RESET_REASON_POWER_DOWN: %d\n", System.resetReason());
+		if (System.resetReason() == RESET_REASON_POWER_BROWNOUT)
+			INO_TRACE("Recovered from reset with reason RESET_REASON_POWER_BROWNOUT: %d\n", System.resetReason());
+		//PM.reset();
+	}
+
 	init = false;
 }
 
@@ -172,9 +199,18 @@ void loop()
 	mqttClient.loop();
 	if (connector.updateReadings()){
 		INO_TRACE("---------Update Readings returned true.---------\n");
-		connector.processReadings();
+		// connector.processReadings();
+
+		//PM.updateReadings must be called periodically
+		PM.updateReadings();
+		PM.printPowerReport();
+		if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
+			INO_TRACE("---------Low battery in loop. Go down for sleep.---------\n");
+			//Sleep for 60 secs
+			System.sleep(SLEEP_MODE_DEEP, 60000);
+		}
 	}
 	connector.applyWiFiStatus();
 	//Make sure we disable the forced wakeup if the pin goes down
-	//sensor.initWakeupPinStatus();
+	sensor.initWakeupPinStatus();
 }

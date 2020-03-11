@@ -64,7 +64,8 @@ bool ServiceConnector::updateReadings()
 	unsigned long nowTime = millis();
 	unsigned long waited = nowTime - lastReadingTime;
 	if (waited>=0 && waited<=SensorConfig.intervalTime)
-		return false;
+		System.sleep(SLEEP_MODE_DEEP, waited / 1000);
+		// return false;
 	
 	//Reinitialize the reading time for a new sample
 	//We use second precision that is supported by the real time clock
