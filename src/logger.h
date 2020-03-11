@@ -32,9 +32,9 @@
 #define LOGGER_h
 
 int freeRam();
-#define M_RAM_LEFT(str) //Serial.print(str); Serial.println(freeRam()); Serial.flush();
-#define M_LOG(str) //Serial.println(str); Serial.flush()
-#define M_LOG_(str) //Serial.print(str); Serial.flush()
+#define M_RAM_LEFT(str) Serial.print(str); Serial.println(freeRam()); Serial.flush();
+#define M_LOG(str) Serial.println(str); Serial.flush()
+#define M_LOG_(str) Serial.print(str); Serial.flush()
 //#define RAM_LEFT(str) ;
 //#define LOG(str)
 //#define LOG_(str)
@@ -42,17 +42,17 @@ int freeRam();
 //#define M_LOG_OUT_MSG()
 
 
-#define M_LOGGER_TO_SERIAL(...) //Serial1.printf(__VA_ARGS__);
+#define M_LOGGER_TO_SERIAL(...) Serial.printf(__VA_ARGS__) // Serial1.printf(__VA_ARGS__);
 
-#define INO_TRACE(...) //M_LOGGER_TO_SERIAL(__VA_ARGS__)
-#define PM_TRACE(...) //M_LOGGER_TO_SERIAL(__VA_ARGS__)
-#define SC_TRACE(...) //M_LOGGER_TO_SERIAL(__VA_ARGS__)
-#define MSG_TRACE(...) //M_LOGGER_TO_SERIAL(__VA_ARGS__)
-#define M_TRACE(...) //M_LOGGER_TO_SERIAL(__VA_ARGS__)
-#define M_DEBUG(...) // M_LOGGER_TO_SERIAL(__VA_ARGS__)
-#define M_INFO(...) // M_LOGGER_TO_SERIAL(__VA_ARGS__)
-#define M_ERROR(...) // M_LOGGER_TO_SERIAL(__VA_ARGS__)
-#define M_MQTT_TRACE(...) //Serial.printf(__VA_ARGS__);
+#define INO_TRACE(...) M_LOGGER_TO_SERIAL(__VA_ARGS__)
+#define PM_TRACE(...) M_LOGGER_TO_SERIAL(__VA_ARGS__)
+#define SC_TRACE(...) M_LOGGER_TO_SERIAL(__VA_ARGS__)
+#define MSG_TRACE(...) M_LOGGER_TO_SERIAL(__VA_ARGS__)
+#define M_TRACE(...) // M_LOGGER_TO_SERIAL(__VA_ARGS__)
+#define M_DEBUG(...) M_LOGGER_TO_SERIAL(__VA_ARGS__)
+#define M_INFO(...) M_LOGGER_TO_SERIAL(__VA_ARGS__)
+#define M_ERROR(...) M_LOGGER_TO_SERIAL(__VA_ARGS__)
+#define M_MQTT_TRACE(...) Serial.printf(__VA_ARGS__);
 
 
 #define M_OUT_MSG  //Serial.print("-->"); msg.SerializeTo(Serial);

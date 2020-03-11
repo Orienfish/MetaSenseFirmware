@@ -49,16 +49,6 @@ Sensor::Sensor(byte humClkPin, byte humDataPin, byte barCSPin, byte sdCSPin,
 	//	sht1x = new SHT1x(humDataPin, humClkPin);
 }
 
-/*unsigned long Sensor::now() {
-	_now = Time.now();
-	_lastMillis = millis();
-	return _now;
-}
-void Sensor::setTime(unsigned long time) {
-	Time.setTime(time);
-	_now = time;
-}*/
-
 void Sensor::begin()
 {
 	pinMode(WAKEUP_Pin, INPUT);
@@ -75,7 +65,7 @@ void Sensor::begin()
 	pinMode(BLE_KEY_PIN, OUTPUT);
 	digitalWrite(BLE_KEY_PIN, HIGH);
 
-	//selectSPI(SDCARD);
+	//sselectSPI(SDCARD);
 	// SPI.setDataMode(SPI_MODE0);
 	// SPI.setClockDivider(SPI_FULL_SPEED);
 	// SPI.setBitOrder(MSBFIRST);
@@ -84,38 +74,37 @@ void Sensor::begin()
 	sdcard_Init();
 	barometer_Init();
 	afe.begin();
-	if(init) {
-		EEPROM.get(0, SensorConfig);
-		SensorConfig.AFESerial[9]=0;
-		SensorConfig.MACAddress[19]=0;
-	}
-}
-double Sensor::getPowerLevel()
-{
-	int8_t val = PM.getFuelLevel();
-	LOG_TRACE("Fuel level %d", val)
-	return val; // getInVoltage();
+	//if(init) {
+		// EEPROM.get(0, SensorConfig);
+	//	SensorConfig.AFESerial[9]=0;
+	//	SensorConfig.MACAddress[19]=0;
+	//}
 }
 
 void Sensor::storeEEPROMConfig() {
 	EEPROM.put(0, SensorConfig);
 }
+
 SensorEEPROMConfig_t* Sensor::getConfig() {
 	return &SensorConfig;
 }
+
 bool Sensor::isWiFiEnabled() {
 	//We disable WiFi when sleep is enabled
 	return SensorConfig.wifiEnabled && !isSleepEnabled() && !temporarlyDisableSleep;
 }
+
 bool Sensor::isSDAvail() {
 	//TODO Fix the code to manage SD card errors and detect when the card is missing
 	return SDAvail;
 }
+
 void Sensor::initWakeupPinStatus()
 {
 	wakeupPinStatus = (HIGH == digitalRead(WAKEUP_Pin));
 	//LOG_TRACE("wakeupPinStatus %d\r\n", wakeupPinStatus);
 }
+
 void Sensor::checkWakeupPinStatus()
 {
 	if (!wakeupPinStatus)
@@ -127,14 +116,16 @@ bool Sensor::isSleepEnabledByConfig() {
 	// And if the wakeup pin is low (so that going up will wakeup the cpu)
 	// And if the USB serial is not connecte (to avoid continuous connection/disconnections)
 	bool wkupLow = !wakeupPinStatus;
-	bool noUsb = !isUSBChargerConnected();
+	// bool noUsb = !isUSBChargerConnected();
 	bool sleepEnabled = getConfig()->sleepEnabled;
 	//LOG_TRACE("Sleep configuration: wkupLow %d, noUsb %d, sleepEnabled %d\r\n", wkupLow, noUsb, sleepEnabled);
-	return sleepEnabled && wkupLow && noUsb;
+	return sleepEnabled && wkupLow; // && noUsb;
 }
+
 bool Sensor::isSleepEnabled() {
 	return isSleepEnabledByConfig() && !temporarlyDisableSleep;
 }
+
 bool Sensor::isUSBSerialConnected() {
 	//Available for Write happens to be -1 when the USB serial is disconnected
 	int aw = Serial.availableForWrite();
@@ -142,6 +133,7 @@ bool Sensor::isUSBSerialConnected() {
 	//Not quick enough to relibly stop the system from sleeping lets ignore for now.
 	//return false;
 }
+
 double Sensor::getInVoltage() {
 	//Available for Write happens to be -1 when the USB serial is disconnected
 	int val = analogRead(PowerConnectedPin);
@@ -150,12 +142,7 @@ double Sensor::getInVoltage() {
 	//Not quick enough to relibly stop the system from sleeping lets ignore for now.
 	//return false;
 }
-bool Sensor::isUSBChargerConnected() {
-	//Available for Write happens to be -1 when the USB serial is disconnected
-	return PM.isChargingOrTrickling(); // getInVoltage()>2500;
-	//Not quick enough to relibly stop the system from sleeping lets ignore for now.
-	//return false;
-}
+
 boolean Sensor::isBluetoothSerialConnected() {
 	//To discover if bluetooth is connected we make sure to configure the module
 	// AT+PIO11

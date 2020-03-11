@@ -41,8 +41,8 @@
 #include "SHT1x.h"
 
 #include "AFE.h"
-#include "PowerManager.h"
-extern PowerManager PM;
+//#include "PowerManager.h"
+//extern PowerManager PM;
 extern SdFat SD;
 
 class Sensor
@@ -75,9 +75,6 @@ public:
 	void begin();
 	File logFile;
 
-	// unsigned long now();
-	// void setTime(unsigned long time);
-
 	//SPI stuff
 	enum spiDevice { SDCARD, BAR, UC_SPI, NONE };
 	void selectSPI(spiDevice spiID);
@@ -88,8 +85,8 @@ public:
 	bool isSleepEnabled();
 	bool isSleepEnabledByConfig();
 	bool isUSBSerialConnected();
-	bool isUSBChargerConnected();
-	double getPowerLevel();
+	//bool isUSBChargerConnected();
+	//double getPowerLevel();
 	double getInVoltage();
 
 	void initWakeupPinStatus();

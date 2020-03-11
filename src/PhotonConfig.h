@@ -38,14 +38,14 @@
 #define BOARD_VERSION 2.2
 #define MAX_MSG_LEN 350
 
-#define Experimental_MQTTClientEnabled true
-#define Experimental_RunNeuralNet true
-#define MQTT_Server_Address "192.168.2.38"
-//#define MQTT_Server_Address "192.168.10.6"
+#define MQTT_Server_Address "192.168.1.57"
 #define MQTT_Server_Port 61613
-#define MQTT_Server_Username "admin"
-#define MQTT_Server_Password "SamsungProject"
-#define MQTT_Streaming_Default_Format json;
+#define MQTT_Client_ID "photon"
+#define MQTT_Topic "photon/data"
+//#define MQTT_Server_Username "admin"
+//#define MQTT_Server_Password "SamsungProject"
+//#define MQTT_Streaming_Default_Format json;
+#define INTERVAL_MS 200
 
 typedef enum { json, binB64, bin } MessageEncodingType_t;
 
@@ -73,11 +73,11 @@ typedef struct {
 const bool defaultMirrorToUSB = false;
 //const bool forceSyncAtStartup = false;  		// blocks at setup until cloud connection succeeds
 const bool stealthMode = false;					// turn off RGB LED during normal operation
-const String wifiSSID = "littlesegway"; 		// CSC mobile hotspot
-const String wifiPassword = "gogogogo"; 		// CSC mobile hotspot
+const String wifiSSID = "SEELAB_IN_LAB"; 		// CSC mobile hotspot
+const String wifiPassword = "seelab2148"; 		// CSC mobile hotspot
 const int8_t UTCOffset = -7;  					// -7 for Pacific
-const uint8_t wifiAttempts = 1;					// how many times to look for wifi at setup
-const bool deepSleepEnabled = false;			// requires setup() after wakeup
+// const uint8_t wifiAttempts = 1;					// how many times to look for wifi at setup
+const bool deepSleepEnabled = true;			// requires setup() after wakeup
 //const long init_wifiOnUntil = -1; // 0 disables , -1 on forever
 //------------------
 //retained variables
@@ -101,62 +101,45 @@ extern bool temporarlyDisableSleep;
 extern bool usbPassthrough;
 extern int scheduledSetupCommand;
 
-/*=========================================================================
-	Bluetooth Serial Connection Parameters
-	-----------------------------------------------------------------------*/
-//This is actually the system Key pin that will reset the module if LOW
-//for more than a second
 
-	//BOARD Version <2.2
-	//#define BTEnablePin    D6 //NOTE: switched with D4 in board 2.2 (to support debug)
-	//BOARD Version >=2.2
-	//#define BTEnablePin    D4
+#define BTConnectedPin D5 // aka COMM_LED
 
-// #if BOARD_VERSION_MAJ >= 2 && BOARD_VERSION_MIN >= 2
-// 	 #define BTEnablePin    D4
-// #else
-// 	 #define BTEnablePin    D6
-// #endif
-
-
-  #define BTConnectedPin D5 // aka COMM_LED
-
-	#define serialSpeed  9600  //115200 //38400
-	#define AT_BAUD_BLE_CFG  "AT+BAUD0" //115200 = "AT+BAUD4"
+#define serialSpeed  9600  //115200 //38400
+#define AT_BAUD_BLE_CFG  "AT+BAUD0" //115200 = "AT+BAUD4"
 
 /*=========================================================================*/
 
 /*=========================================================================
-	Temperature+Humidity (SHT11)
-	-----------------------------------------------------------------------*/
-	#define HumDataPin D2
-	#define HumSckPin  D3
+Temperature+Humidity (SHT11)
+-----------------------------------------------------------------------*/
+#define HumDataPin D2
+#define HumSckPin  D3
 /*=========================================================================*/
 
 /*=========================================================================
-	Volatile Organic Compounds (VOC) sensor
-	-----------------------------------------------------------------------*/
-	#define VOCEnablePin A6
+Volatile Organic Compounds (VOC) sensor
+-----------------------------------------------------------------------*/
+#define VOCEnablePin A6
 /*=========================================================================*/
 
 /*=========================================================================
-	SPI: Used by Barometric pressure (MS5534C) and MicroSD card
-	-----------------------------------------------------------------------*/
-	#define SPIDinPin A5 	// MOSI
-	#define SPIDoutPin A4 	// MISO
-	#define SPISckPin A3
+SPI: Used by Barometric pressure (MS5534C) and MicroSD card
+-----------------------------------------------------------------------*/
+#define SPIDinPin A5 	// MOSI
+#define SPIDoutPin A4 	// MISO
+#define SPISckPin A3
 
-	#define BarCSPin A0		// Bar chip select
-	#define SDCSPin  A2 	// SD chip select
+#define BarCSPin A0		// Bar chip select
+#define SDCSPin  A2 	// SD chip select
 
-	//#define SDCDPin A1		// SD card detect
-	#define PowerConnectedPin A1
+//#define SDCDPin A1		// SD card detect
+#define PowerConnectedPin A1
 
 
-	//BOARD Version <2.2
-	//	#define UCCSPin  D4 	// unconnected SPI device
-	//BOARD Version >=2.2
-	//#define UCCSPin  D6 	// unconnected SPI device
+//BOARD Version <2.2
+//	#define UCCSPin  D4 	// unconnected SPI device
+//BOARD Version >=2.2
+//#define UCCSPin  D6 	// unconnected SPI device
 // #if  BOARD_VERSION_MAJ >= 2 && BOARD_VERSION_MIN >= 2
 // 	#define UCCSPin    D6
 // #else
@@ -167,19 +150,19 @@ extern int scheduledSetupCommand;
 /*=========================================================================*/
 
 /*=========================================================================
-	I2C ADDRESS/BITS
-	-----------------------------------------------------------------------*/
-	#define ADS1115_ADDRESS_0                 (0x48)
-	#define ADS1115_ADDRESS_1                 (0x49)
+I2C ADDRESS/BITS
+-----------------------------------------------------------------------*/
+#define ADS1115_ADDRESS_0                 (0x48)
+#define ADS1115_ADDRESS_1                 (0x49)
 /*=========================================================================*/
 
-	#define WAKEUP_Pin	A7
+#define WAKEUP_Pin	A7
 
 /*=========================================================================
-	UNASSIGNED/DEBUG
-	-----------------------------------------------------------------------*/
-	#define DebugLED D7
-	//Will need to free also D6 for supporting debug
+UNASSIGNED/DEBUG
+-----------------------------------------------------------------------*/
+#define DebugLED D7
+//Will need to free also D6 for supporting debug
 /*=========================================================================*/
 
 #endif
