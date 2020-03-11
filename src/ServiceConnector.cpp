@@ -87,11 +87,11 @@ bool ServiceConnector::updateReadings()
 }
 
 float ServiceConnector::convertRawGasToVoltage(int rng, int rawValue) {
-	float gain = rng;
-  if (rng == 0)
-  	gain = 2.0 / 3.0;
-  float voltCalc = 4096.0 / (gain * 0x7FFF);
-  return (rawValue * voltCalc);
+  	float gain = rng;
+  	if (rng == 0)
+  		gain = 2.0 / 3.0;
+  	float voltCalc = 4096.0 / (gain * 0x7FFF);
+  	return (rawValue * voltCalc);
 }
 
 Readings_History_t* ServiceConnector::UpdateHistory() {

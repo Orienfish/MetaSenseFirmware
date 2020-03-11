@@ -349,14 +349,14 @@ AFE::Gas_Model_t* AFE::convertModel(uint16_t temp_C, uint16_t hum_RH, uint16_t b
 	Gas_mV_t SN3A_mV = getVoltage(lastReading.range, lastReading.ADC1_0);
 	Gas_mV_t SN3W_mV = getVoltage(lastReading.range, lastReading.ADC1_1);
 
-  lastModel.SN1_ppb = modelNO2(SN1A_mV, SN1W_mV, temp_C, hum_RH);
-  lastModel.SN2_ppm = modelOX(SN2A_mV, SN2W_mV, temp_C, hum_RH, SN1A_mV, SN1W_mV); // in PPM
-  lastModel.SN3_ppm = modelCO(SN3A_mV, SN3W_mV, temp_C, hum_RH); // in PPM
-  lastModel.temp_F = temp_F;
-  lastModel.hum_RH = hum_RH;
-  lastModel.AQI = modelAQI(lastModel.SN1_ppb, lastModel.SN2_ppm, lastModel.SN3_ppm);
+    lastModel.SN1_ppb = modelNO2(SN1A_mV, SN1W_mV, temp_C, hum_RH);
+    lastModel.SN2_ppm = modelOX(SN2A_mV, SN2W_mV, temp_C, hum_RH, SN1A_mV, SN1W_mV); // in PPM
+    lastModel.SN3_ppm = modelCO(SN3A_mV, SN3W_mV, temp_C, hum_RH); // in PPM
+    lastModel.temp_F = temp_F;
+    lastModel.hum_RH = hum_RH;
+    lastModel.AQI = modelAQI(lastModel.SN1_ppb, lastModel.SN2_ppm, lastModel.SN3_ppm);
 
-  return &lastModel;
+    return &lastModel;
 }
 
 //AFE::AFEConfig_t* AFE::getAFEConfiguration(){
