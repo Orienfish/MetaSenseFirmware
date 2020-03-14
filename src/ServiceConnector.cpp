@@ -66,7 +66,7 @@ bool ServiceConnector::updateReadings()
 	if (waited>=0 && waited<=SensorConfig.intervalTime)
 		System.sleep(SLEEP_MODE_DEEP, waited / 1000);
 		// return false;
-	
+
 	//Reinitialize the reading time for a new sample
 	//We use second precision that is supported by the real time clock
 	lastReadingTime = nowTime; //original was using millis();
@@ -177,7 +177,7 @@ void ServiceConnector::processReadings() {
 	float inputs[N_IN];
 	ComputeStatisticalInputs(inputs);
 
-	
+
 	// publish msg using MQTT
 	//M_MQTT_TRACE("Publishing MSG to MQTT: %s\r\n", msg);
 	//if (!mqttClient.isConnected()) {
