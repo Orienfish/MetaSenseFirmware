@@ -38,14 +38,14 @@
 #define BOARD_VERSION 2.2
 #define MAX_MSG_LEN 350
 
-#define MQTT_Server_Address "137.110.160.230"
+#define MQTT_Server_Address "192.168.137.201"
 #define MQTT_Server_Port 61613
 #define MQTT_Client_ID "photon"
 #define MQTT_Topic "photon/data"
 //#define MQTT_Server_Username "admin"
 //#define MQTT_Server_Password "SamsungProject"
 //#define MQTT_Streaming_Default_Format json;
-#define INTERVAL_S 1 // in seconds
+#define INTERVAL_S 5 // in seconds
 
 typedef enum { json, binB64, bin } MessageEncodingType_t;
 
@@ -73,8 +73,8 @@ typedef struct {
 const bool defaultMirrorToUSB = false;
 //const bool forceSyncAtStartup = false;  		// blocks at setup until cloud connection succeeds
 const bool stealthMode = false;					// turn off RGB LED during normal operation
-const String wifiSSID = "Mesa Nueva Resident"; 		// CSC mobile hotspot
-const String wifiPassword = "mesanuevaresident"; 		// CSC mobile hotspot
+const String wifiSSID = "DESKTOP-CQJV03P 3646"; 		// CSC mobile hotspot
+const String wifiPassword = "613^C8j2"; 		// CSC mobile hotspot
 const int8_t UTCOffset = -7;  					// -7 for Pacific
 // const uint8_t wifiAttempts = 1;					// how many times to look for wifi at setup
 const bool deepSleepEnabled = true;			// requires setup() after wakeup

@@ -194,6 +194,7 @@ void setup()
 	}
 
 	init = false;
+	pinMode(DebugLED, OUTPUT);
 }
 
 void loop()
@@ -213,16 +214,16 @@ void loop()
 		//PM.updateReadings must be called periodically
 		PM.updateReadings();
 		PM.printPowerReport();
-		/*if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
+		if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
 			INO_TRACE("---------Low battery in loop. Go down for sleep.---------\n");
 			//Sleep for 60 secs
 			System.sleep(SLEEP_MODE_DEEP, 60);
-		}*/
+		}
 	}
 	connector.applyWiFiStatus();
 	//Make sure we disable the forced wakeup if the pin goes down
 	sensor.initWakeupPinStatus();
 
 	// sleep for the interval time
-	// System.sleep(SLEEP_MODE_DEEP, INTERVAL_S);
+	System.sleep(SLEEP_MODE_DEEP, INTERVAL_S);
 }
