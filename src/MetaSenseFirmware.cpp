@@ -136,7 +136,7 @@ void setup()
 	SensorConfig.sleepEnabled = true;
 	SensorConfig.vocInstalled = false;
 	SensorConfig.co2Installed = false;
-	SensorConfig.intervalTime = INTERVAL_MS;
+	SensorConfig.intervalTime = INTERVAL_S;
 
 	if (init)
 	{
@@ -204,6 +204,11 @@ void loop()
 	if (connector.updateReadings()){
 		INO_TRACE("---------Update Readings returned true.---------\n");
 		// connector.processReadings();
+		AFE::Gas_Model_t* afeModel = &sensor.afe.lastModel;
+		sprintf(buf, "%.4f,%.4f,%.4f,%.4f,%d,%d\n", afeModel->SN1_ppb, 
+			afeModel->SN2_ppm, afeModel->SN3_ppm, afeModel->AQI, 
+			afeModel->temp_F, afeModel->hum_RH);
+		connector.publishReadings(buf);
 
 		//PM.updateReadings must be called periodically
 		PM.updateReadings();
@@ -211,10 +216,13 @@ void loop()
 		if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
 			INO_TRACE("---------Low battery in loop. Go down for sleep.---------\n");
 			//Sleep for 60 secs
-			System.sleep(SLEEP_MODE_DEEP, 60000);
+			System.sleep(SLEEP_MODE_DEEP, 60);
 		}
 	}
 	connector.applyWiFiStatus();
 	//Make sure we disable the forced wakeup if the pin goes down
 	sensor.initWakeupPinStatus();
+
+	// sleep for the interval time
+	// System.sleep(SLEEP_MODE_DEEP, INTERVAL_S);
 }

@@ -62,9 +62,9 @@ bool ServiceConnector::updateReadings()
 	sensor.checkWakeupPinStatus();
 
 	unsigned long nowTime = millis();
-	unsigned long waited = nowTime - lastReadingTime;
-	if (waited>=0 && waited<=SensorConfig.intervalTime)
-		System.sleep(SLEEP_MODE_DEEP, waited / 1000);
+	// unsigned long waited = nowTime - lastReadingTime;
+	//if (waited>=0 && waited<=SensorConfig.intervalTime)
+	//	System.sleep(SLEEP_MODE_DEEP, waited / 1000);
 		// return false;
 
 	//Reinitialize the reading time for a new sample
@@ -176,17 +176,17 @@ void ServiceConnector::processReadings() {
 	// smooth the input
 	float inputs[N_IN];
 	ComputeStatisticalInputs(inputs);
+}
 
-
+void ServiceConnector::publishReadings(char *msg) {
 	// publish msg using MQTT
-	//M_MQTT_TRACE("Publishing MSG to MQTT: %s\r\n", msg);
-	//if (!mqttClient.isConnected()) {
-	//	M_MQTT_TRACE("Not connected to MQTT... reconnecting\r\n");
-		//mqttClient.connect(MQTT_Client_ID, MQTT_Server_Username, MQTT_Server_Password);
-	//	mqttClient.connect(MQTT_Client_ID);
-	//}
-	//if (mqttClient.isConnected()) {
-	//	M_MQTT_TRACE("Client is connected... publish to %s\r\n", MQTT_Topic);
-	//	mqttClient.publish(MQTT_Topic, msg);
-	//}
+	M_MQTT_TRACE("Publishing MSG to MQTT: %s\r\n", msg);
+	if (!mqttClient.isConnected()) {
+		M_MQTT_TRACE("Not connected to MQTT... reconnecting\r\n");
+		mqttClient.connect(MQTT_Client_ID);
+	}
+	if (mqttClient.isConnected()) {
+		M_MQTT_TRACE("Client is connected... publish to %s\r\n", MQTT_Topic);
+		mqttClient.publish(MQTT_Topic, msg);
+	}
 }

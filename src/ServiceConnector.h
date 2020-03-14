@@ -68,6 +68,7 @@ class ServiceConnector
     void processCommands();
     bool updateReadings();
     void processReadings();
+    void publishReadings(char *msg);
     void applyWiFiStatus();
 
   private:

@@ -45,9 +45,9 @@
 //#define MQTT_Server_Username "admin"
 //#define MQTT_Server_Password "SamsungProject"
 //#define MQTT_Streaming_Default_Format json;
-#define INTERVAL_MS 1000 // 10 minutes in ms
+#define INTERVAL_S 1 // in seconds
 
-// typedef enum { json, binB64, bin } MessageEncodingType_t;
+typedef enum { json, binB64, bin } MessageEncodingType_t;
 
 typedef struct {
 	bool wifiEnabled;
