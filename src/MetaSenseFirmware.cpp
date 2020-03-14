@@ -206,9 +206,9 @@ void loop()
 		INO_TRACE("---------Update Readings returned true.---------\n");
 		// connector.processReadings();
 		AFE::Gas_Model_t* afeModel = &sensor.afe.lastModel;
-		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d\n", afeModel->SN1_ppb, 
+		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d,%d\n", afeModel->SN1_ppb, 
 			afeModel->SN2_ppm, afeModel->SN3_ppm, afeModel->AQI, 
-			afeModel->temp_F, afeModel->hum_RH);
+			afeModel->temp_F, afeModel->hum_RH, PM.getFuelLevel());
 		connector.publishReadings(buf);
 
 		//PM.updateReadings must be called periodically
