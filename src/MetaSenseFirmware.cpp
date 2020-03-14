@@ -168,14 +168,14 @@ void setup()
 
 	PM.begin(&PowerState);
 
-	if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
+	/*if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
 		//TODO for debug remove in production
 		PM.printPowerReport();
 		//TODO end of debug stuff
 		INO_TRACE("---------Low battery in begin. Go down for sleep.---------");
 		//Sleep for 60 secs
 		System.sleep(SLEEP_MODE_DEEP, 60000);
-	}
+	}*/
 
 	// If the reset was due to power issues
 	if (System.resetReason() == RESET_REASON_POWER_MANAGEMENT ||
@@ -205,7 +205,7 @@ void loop()
 		INO_TRACE("---------Update Readings returned true.---------\n");
 		// connector.processReadings();
 		AFE::Gas_Model_t* afeModel = &sensor.afe.lastModel;
-		sprintf(buf, "%.4f,%.4f,%.4f,%.4f,%d,%d\n", afeModel->SN1_ppb, 
+		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d\n", afeModel->SN1_ppb, 
 			afeModel->SN2_ppm, afeModel->SN3_ppm, afeModel->AQI, 
 			afeModel->temp_F, afeModel->hum_RH);
 		connector.publishReadings(buf);
@@ -213,11 +213,11 @@ void loop()
 		//PM.updateReadings must be called periodically
 		PM.updateReadings();
 		PM.printPowerReport();
-		if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
+		/*if (PM.isBatteryLow() && !PM.isChargingOrTrickling()){
 			INO_TRACE("---------Low battery in loop. Go down for sleep.---------\n");
 			//Sleep for 60 secs
 			System.sleep(SLEEP_MODE_DEEP, 60);
-		}
+		}*/
 	}
 	connector.applyWiFiStatus();
 	//Make sure we disable the forced wakeup if the pin goes down

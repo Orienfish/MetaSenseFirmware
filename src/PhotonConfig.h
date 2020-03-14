@@ -39,7 +39,7 @@
 #define MAX_MSG_LEN 350
 
 #define MQTT_Server_Address "137.110.160.230"
-#define MQTT_Server_Port 1883
+#define MQTT_Server_Port 61613
 #define MQTT_Client_ID "photon"
 #define MQTT_Topic "photon/data"
 //#define MQTT_Server_Username "admin"
