@@ -69,9 +69,7 @@ Use the CLI tool in terminal is the most convenient option. Following the [insta
     particle serial monitor --port COM3
    ```
 
-   
-
-    
+   **Important Note**: If the photon blinks green rapidly no matter what you programed, try `particle update` to update the firmware.
 
    
 
