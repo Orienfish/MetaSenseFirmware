@@ -129,6 +129,14 @@ void re_enable_sleep() {
 	temporarlyDisableSleep = false;
 }
 
+// settings for the adaptive sampling algorithm
+int I_max = 40, I_min = 1; // in minutes
+float k = 2.12, alpha = 0.4;
+double last_x = 0.0, cur_x;
+unsigned long last_time = 0.0, cur_time; // in millis
+uint16_t last_temp = 0;
+int next_interval_s = INTERVAL_S; // in seconds
+
 void setup()
 {
 	// set Sensor Config
@@ -203,12 +211,32 @@ void loop()
 
 	mqttClient.loop();
 	if (connector.updateReadings()){
+		cur_time = millis(); // get the time for the currret reading
 		INO_TRACE("---------Update Readings returned true.---------\n");
 		// connector.processReadings();
 		AFE::Gas_Model_t* afeModel = &sensor.afe.lastModel;
-		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d,%d\n", afeModel->SN1_ppb, 
+
+		// sleep for the interval time
+		// implement the adaptive sampling heuristic here
+		if (last_time != 0.0) {
+			double delta_h = max(double(cur_time - last_time) / 1000 / 3600, double(I_min) / 60); // in hours
+			float grad = float(abs(afeModel->temp_F - last_temp)) / delta_h;
+			cur_x = alpha * grad + (1 - alpha) * last_x;
+			next_interval_s = int(I_max - k * cur_x) * 60; // convert from minutes to seconds
+			next_interval_s = max(I_min * 60, next_interval_s); // lower bound in seconds
+			INO_TRACE("delta_h: %f, grad: %f, cur_x: %f\n", delta_h, grad, cur_x);
+			INO_TRACE("next_interval_s: %d\n", next_interval_s);
+		}
+
+		// update last_time, last_temp and last_x
+		last_time = cur_time;
+		last_temp = afeModel->temp_F;
+		last_x = cur_x;
+
+		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d,%d,%d\n", afeModel->SN1_ppb, 
 			afeModel->SN2_ppm, afeModel->SN3_ppm, afeModel->AQI, 
-			afeModel->temp_F, afeModel->hum_RH, PM.getFuelLevel());
+			afeModel->temp_F, afeModel->hum_RH, PM.getFuelLevel(),
+			next_interval_s);
 		connector.publishReadings(buf);
 
 		//PM.updateReadings must be called periodically
@@ -224,6 +252,6 @@ void loop()
 	//Make sure we disable the forced wakeup if the pin goes down
 	sensor.initWakeupPinStatus();
 
-	// sleep for the interval time
-	System.sleep(SLEEP_MODE_DEEP, INTERVAL_S);
+	// sleep for the calculated interval
+	System.sleep(SLEEP_MODE_DEEP, next_interval_s);
 }
