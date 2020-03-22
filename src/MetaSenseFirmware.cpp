@@ -132,9 +132,9 @@ void re_enable_sleep() {
 // settings for the adaptive sampling algorithm
 int I_max = 40, I_min = 1; // in minutes
 float k = 2.12, alpha = 0.4;
-double last_x = 0.0, cur_x;
-unsigned long last_time = 0.0, cur_time; // in millis
-uint16_t last_temp = 0;
+retained double last_x = 0.0, cur_x;
+retained unsigned long last_time = 0.0, cur_time; // in millis
+retained uint16_t last_temp = 0;
 int next_interval_s = INTERVAL_S; // in seconds
 
 void setup()
@@ -218,9 +218,10 @@ void loop()
 
 		// sleep for the interval time
 		// implement the adaptive sampling heuristic here
+		double delta_h, grad;
 		if (last_time != 0.0) {
-			double delta_h = max(double(cur_time - last_time) / 1000 / 3600, double(I_min) / 60); // in hours
-			float grad = float(abs(afeModel->temp_F - last_temp)) / delta_h;
+			delta_h = max(double(cur_time - last_time) / 1000 / 3600, double(I_min) / 60); // in hours
+			grad = double(abs(afeModel->temp_F - last_temp)) / delta_h;
 			cur_x = alpha * grad + (1 - alpha) * last_x;
 			next_interval_s = int(I_max - k * cur_x) * 60; // convert from minutes to seconds
 			next_interval_s = max(I_min * 60, next_interval_s); // lower bound in seconds
@@ -233,10 +234,10 @@ void loop()
 		last_temp = afeModel->temp_F;
 		last_x = cur_x;
 
-		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d,%d,%d\n", afeModel->SN1_ppb, 
+		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d,%d,%f,%f,%f,%d\n", afeModel->SN1_ppb, 
 			afeModel->SN2_ppm, afeModel->SN3_ppm, afeModel->AQI, 
 			afeModel->temp_F, afeModel->hum_RH, PM.getFuelLevel(),
-			next_interval_s);
+			delta_h, grad, cur_x, next_interval_s);
 		connector.publishReadings(buf);
 
 		//PM.updateReadings must be called periodically
