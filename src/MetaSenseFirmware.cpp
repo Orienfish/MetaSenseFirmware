@@ -132,10 +132,13 @@ void re_enable_sleep() {
 // settings for the adaptive sampling algorithm
 int I_max = 40, I_min = 1; // in minutes
 float k = 2.12, alpha = 0.4;
-retained double last_x = 0.0, cur_x;
-retained unsigned long last_time = 0.0, cur_time; // in millis
+retained double last_x = 0.0;
+double cur_x;
+double x_max = 100.0;
 retained uint16_t last_temp = 0;
+retained int last_interval_s = 0; // in seconds
 int next_interval_s = INTERVAL_S; // in seconds
+
 
 void setup()
 {
@@ -211,7 +214,6 @@ void loop()
 
 	mqttClient.loop();
 	if (connector.updateReadings()){
-		cur_time = millis(); // get the time for the currret reading
 		INO_TRACE("---------Update Readings returned true.---------\n");
 		// connector.processReadings();
 		AFE::Gas_Model_t* afeModel = &sensor.afe.lastModel;
@@ -219,26 +221,30 @@ void loop()
 		// sleep for the interval time
 		// implement the adaptive sampling heuristic here
 		double delta_h, grad;
-		if (last_time != 0.0) {
-			delta_h = max(double(cur_time - last_time) / 1000 / 3600, double(I_min) / 60); // in hours
+		if (last_interval_s != 0) {
+			delta_h = double(max(double(last_interval_s) / 60, I_min)) / 60; // in hours
 			grad = double(abs(afeModel->temp_F - last_temp)) / delta_h;
 			cur_x = alpha * grad + (1 - alpha) * last_x;
 			next_interval_s = int(I_max - k * cur_x) * 60; // convert from minutes to seconds
 			next_interval_s = max(I_min * 60, next_interval_s); // lower bound in seconds
-			INO_TRACE("delta_h: %f, grad: %f, cur_x: %f\n", delta_h, grad, cur_x);
+			INO_TRACE("delta_h: %.4f, grad: %.4f, cur_x: %.4f\n", delta_h, grad, cur_x);
 			INO_TRACE("next_interval_s: %d\n", next_interval_s);
 		}
 
-		// update last_time, last_temp and last_x
-		last_time = cur_time;
-		last_temp = afeModel->temp_F;
-		last_x = cur_x;
-
-		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d,%d,%f,%f,%f,%d\n", afeModel->SN1_ppb, 
+		// publish msg
+		sprintf(buf, "%.4f,%.4f,%.4f,%.1f,%d,%d,%d,%d,%.4f,%.4f,%.4f,%d\n", afeModel->SN1_ppb, 
 			afeModel->SN2_ppm, afeModel->SN3_ppm, afeModel->AQI, 
 			afeModel->temp_F, afeModel->hum_RH, PM.getFuelLevel(),
-			delta_h, grad, cur_x, next_interval_s);
+			last_interval_s, delta_h, grad, cur_x, next_interval_s);
 		connector.publishReadings(buf);
+
+		// update last_time, last_temp and last_x
+		last_temp = afeModel->temp_F;
+		last_x = cur_x;
+		if (isinf(cur_x)) // deal with extreme case
+			last_x = x_max;
+		last_interval_s = next_interval_s;
+
 
 		//PM.updateReadings must be called periodically
 		PM.updateReadings();
